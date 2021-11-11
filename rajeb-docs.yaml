@@ -5,6 +5,12 @@ info:
   version: 0.1.0
 servers:
   - url: http
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
 paths:
   /users:
     post:
@@ -19,7 +25,7 @@ paths:
           application/json:
             schema:
               properties:
-                fullName: 
+                fullName:
                   type: string
                   example: Masandy Hariyanto
                 phoneNumber:
@@ -31,22 +37,20 @@ paths:
                 password:
                   type: string
                   example: themostepicpasswordofalltime
-      
+
       responses:
-        '200':    # status code
+        200: # status code
           description: A JSON array of output data
           content:
             application/json:
-              schema: 
+              schema:
                 properties:
                   success:
                     type: boolean
-                  message: 
-                    type: string
                   output:
                     type: object
                     properties:
-                      id: 
+                      id:
                         type: string
                         description: This is the User ID
                       accessToken:
@@ -55,3 +59,170 @@ paths:
                       refreshToken:
                         type: string
                         description: need to pass this token to create new accessToken at /auth/refresh
+    get:
+      security:
+        - bearerAuth: []
+      summary: Find all user
+      tags:
+        - user
+      description: get all data user from server, minimum permission level Admin or Super User
+      responses:
+        200:
+          description: Object users
+  /users/:userId:
+    get:
+      security:
+        - bearerAuth: []
+      summary: Find one user
+      description: Need accessToken
+      tags:
+        - user
+      responses:
+        200:
+          description: Object single user
+  /auth:
+    post:
+      summary: To get accessToken and refreshToken
+      description: Get the access token and refresh token using email and password
+      tags:
+        - auth
+      requestBody: 
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        200:
+          description: accessToken and refreshToken
+          content:
+            application/json:
+              schema:
+                properties:
+                  accessToken:
+                    type: string
+                  refreshToken:
+                    type: string
+  /auth/refresh:
+    post:
+      security:
+        - bearerAuth: []
+      summary: To get accessToken
+      description: Get access token using refresh token and need previously authorization header to process
+      tags:
+        - auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                refresh_token:
+                  type: string
+      responses:
+        200:
+          description: ok
+          content:
+            application/json:
+              schema:
+                properties:
+                  accessToken:
+                    type: string
+                  refreshToken:
+                    type: string
+  /orders:
+    post:
+      tags:
+        - order
+      summary: Create new order
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                senderFullName:
+                  type: string
+                senderPhoneNumber:
+                  type: string
+                senderOriginId:
+                  type: string
+                senderAddress:
+                  type: string
+                senderPostCode:
+                  type: string
+                recipientFullName:
+                  type: string
+                recipientPhoneNumber:
+                  type: string
+                recipientDestinationId:
+                  type: string
+                recipientAddress:
+                  type: string
+                recipientPostCode:
+                  type: string
+                serviceId:
+                  type: string
+                itemName:
+                  type: string
+                itemTypeId:
+                  type: string
+                itemWeight:
+                  type: number
+                itemQty: 
+                  type: number
+                itemWidth:
+                  type: number
+                itemHeight:
+                  type: number
+                itemLong:
+                  type: number
+                itemValue:
+                  type: number
+                insurance:
+                  type: boolean
+                voucherId:
+                  type: string
+
+      responses:
+        200:
+          description: ok
+          content:
+            application/json:
+              schema:
+                properties:
+                  success:
+                    type: boolean
+                  awbNumber:
+                    type: string
+                  billingId:
+                    type: string
+  /tracking:
+    get:
+      tags:
+        - order
+      summary: Tracking data order
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+            example: JR791703100001,JR791703100002
+          required: true
+          description: awbNumber separated by coma for multiple data
+      responses: 
+        200:
+          description: ok
+          content:
+            application/json:
+              schema:
+                properties:
+                  orderData:
+                    type: object
+                    properties:
+                      Trackings: 
+                        type: object
