@@ -69,8 +69,14 @@ paths:
       responses:
         200:
           description: Object users
-  /users/:userId:
+  /users/{userId}:
     get:
+      parameters:
+        - in: path
+          name: userId
+          schema: 
+            type: string
+          required: true
       security:
         - bearerAuth: []
       summary: Find one user
@@ -112,7 +118,7 @@ paths:
       security:
         - bearerAuth: []
       summary: To get accessToken
-      description: Get access token using refresh token and need previously authorization header to process
+      description: Get access token using refresh token and need previous authorization header to process
       tags:
         - auth
       requestBody:
@@ -207,7 +213,7 @@ paths:
         - order
       summary: Tracking data order
       parameters:
-        - in: path
+        - in: query
           name: id
           schema:
             type: string
@@ -225,4 +231,4 @@ paths:
                     type: object
                     properties:
                       Trackings: 
-                        type: object
+                        type: array
