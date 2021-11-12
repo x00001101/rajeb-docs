@@ -37,6 +37,9 @@ paths:
                 password:
                   type: string
                   example: themostepicpasswordofalltime
+                permissionLevel:
+                  type: string
+                  example: 1
 
       responses:
         200: # status code
