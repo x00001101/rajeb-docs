@@ -234,4 +234,4 @@ paths:
                     type: object
                     properties:
                       Trackings: 
-                        type: array
+                        type: object
