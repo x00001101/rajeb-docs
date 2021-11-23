@@ -329,4 +329,27 @@ paths:
       responses:
         200:
           description: Ok
-    
+  /codes: 
+    post: 
+      security:
+        - bearerAuth: []
+      description: "Minimum permission to create code is Admin"
+      tags:
+        - common
+      summary: To Crate New codes
+      requestBody:
+        description: ""
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                id:
+                  type: string
+                name: 
+                  type: string
+                description:
+                  type: string
+      responses: 
+        201:
+          description: New Code created
