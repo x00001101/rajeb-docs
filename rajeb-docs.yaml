@@ -17,7 +17,7 @@ paths:
       summary: Add new user
       tags:
         - user
-      description: "Permission Level Enumeration<ul><li>1=Guest,</li><li>5=Customer,</li><li>10=Courier,</li><li>2063=Admin,</li><li>6159=Super User</li></ul>"
+      description: "Permission Level Enumeration<ul><li>1=Guest,</li><li>5=Customer,</li><li>15=Courier,</li><li>2063=Admin,</li><li>6159=Super User</li></ul>"
       requestBody:
         description: ""
         required: true
@@ -136,6 +136,16 @@ paths:
       responses:
         204: 
           description: User deleted
+  /usersData:
+    get: 
+      tags: 
+        - user
+      security:
+        - bearerAuth: []
+      summary: Get user JWT data (profile)
+      responses:
+        200:
+          description: Ok
   /auth:
     post:
       summary: To get accessToken and refreshToken
@@ -353,3 +363,64 @@ paths:
       responses: 
         201:
           description: New Code created
+    get: 
+      security:
+        - bearerAuth: []
+      description: "Minimum permission to get code data is Courier"
+      tags:
+        - common
+      summary: Get Codes 
+      parameters:
+        - in: query
+          name: lim
+          description: limit search
+          schema:
+            type: string
+            example: 2
+        - in: query
+          name: "off"
+          description: offset search
+          schema:
+            type: string
+            example: 1
+      responses:
+        200:
+          description: Ok
+  /orders/{orderId}:
+    patch:
+      summary: to patch order
+      security:
+        - bearerAuth: []
+      description: "update tracking for each order"
+      tags: 
+        - order
+      parameters:
+        - in: path
+          name: orderId
+          required: true
+          description: this is Order Id (AWB number)
+          schema:
+            type: string
+      requestBody:
+        description: ""
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                codeId:
+                  type: string
+                  description: the Code Id from /codes
+                postId:
+                  type: string
+                  description: Post ID from /posts
+                description: 
+                  type: string
+                  description: additional description
+      responses:
+        200:
+          description: Ok
+  /prices/{serviceId}:
+    get:
+      summary: to get price from service id
+      description: The price is determined using the method price = item_weight * service_price, 
